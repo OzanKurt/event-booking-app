@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        \App\Models\Event::class => \App\Policies\EventPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
