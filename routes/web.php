@@ -13,9 +13,9 @@ Route::get('/', function () {
     return redirect('/events');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    return redirect('/events');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('events', EventController::class);
