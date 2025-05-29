@@ -8,11 +8,6 @@ use Illuminate\Auth\Access\Response;
 
 class EventPolicy
 {
-    public function view(User $user, Event $event)
-    {
-        return $user->id === $event->user_id;
-    }
-
     public function update(User $user, Event $event)
     {
         return $user->id === $event->user_id;
@@ -25,5 +20,23 @@ class EventPolicy
         }
 
         return $user->id === $event->user_id;
+    }
+
+    /**
+     * Rezervasyon oluşturma yetkisi
+     */
+    public function create(User $user, Event $event): Response
+    {
+        // Kullanıcılar kendi etkinliklerini rezerve edemez. [cite: 4]
+        if ($user->id === $event->user_id) {
+            return Response::deny('Kendi etkinliğinizi rezerve edemezsiniz.');
+        }
+
+        // Kullanıcılar aynı etkinliği iki kez rezerve edemez. [cite: 4]
+        if ($event->bookings()->where('user_id', $user->id)->exists()) {
+            return Response::deny('Bu etkinliği zaten rezerve ettiniz.');
+        }
+
+        return Response::allow();
     }
 }

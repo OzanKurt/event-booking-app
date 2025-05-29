@@ -13,9 +13,14 @@
 
 ### Policies
 
-* BookingPolicy
+* EventPolicy
   * [x] Users can't book their own
   * [x] Prevent duplicate bookings for the same user on the same event
+  * [x] Cannot delete event with bookings
+  * [x] User update and delete event policy
+
+* BookingPolicy
+    * [x] Users can only delete their own bookings
 
 ### Validations
 * [x] EventCreateValidation

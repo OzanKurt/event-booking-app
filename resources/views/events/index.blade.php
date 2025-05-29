@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h1>Etkinliklerim</h1>
+        <h1>Etkinlikler</h1>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -42,8 +42,7 @@
                                 <button class="btn btn-sm btn-danger" type="submit">Sil</button>
                             </form>
 
-                            <button id="book-event-button" class="btn btn-sm btn-success" type="submit">Rezerve et</button>
-
+                            <button class="book-event-button btn btn-sm btn-success" type="submit" data-event-id="{{ $event->id }}">Rezerve et</button>
                         </td>
                     </tr>
                 @endforeach
@@ -56,47 +55,59 @@
         @endif
     </div>
 
+@endsection
 
+@push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const bookButton = document.getElementById('book-event-button');
-            if (bookButton) {
-                bookButton.addEventListener('click', function () {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const bookButtons = document.querySelectorAll('.book-event-button');
+
+            bookButtons.forEach(button => {
+                button.addEventListener('click', function () {
                     const eventId = this.dataset.eventId;
+
+                    if (!eventId) {
+                        console.error('eventId yok!');
+                        return;
+                    }
 
                     fetch('/bookings', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({ event_id: eventId })
                     })
-                        .then(response => response.json())
+                        .then(async response => {
+                            if (!response.ok) {
+                                // Hata durumları: 403, 422, 500 vb.
+                                if (response.status === 403) {
+                                    throw new Error('Bu etkinliğe daha önce rezervasyon oluşturmuşsunuz.');
+                                } else if (response.status === 422) {
+                                    const errorData = await response.json();
+                                    throw new Error(Object.values(errorData.errors).flat().join('\n'));
+                                } else {
+                                    throw new Error('Beklenmeyen bir hata oluştu.');
+                                }
+                            }
+
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.message) {
-                                Swal.fire({ // Veya toastr.success(data.message)
+                                Swal.fire({
                                     icon: 'success',
                                     title: 'Başarılı!',
                                     text: data.message,
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
-                                // Rezervasyon yapıldıktan sonra düğmeyi devre dışı bırakma veya metnini değiştirme
-                                bookButton.disabled = true;
-                                bookButton.textContent = 'Rezerve Edildi';
-                            } else if (data.errors) {
-                                // Hata mesajlarını göster
-                                let errorMessage = '';
-                                for (const key in data.errors) {
-                                    errorMessage += data.errors[key].join('\n') + '\n';
-                                }
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Hata!',
-                                    text: errorMessage
-                                });
+
+                                button.disabled = true;
+                                button.textContent = 'Rezerve Edildi';
                             }
                         })
                         .catch(error => {
@@ -104,11 +115,11 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Hata!',
-                                text: 'Bir hata oluştu, lütfen tekrar deneyin.'
+                                text: error.message || 'Bir hata oluştu, lütfen tekrar deneyin.'
                             });
                         });
                 });
-            }
+            });
         });
     </script>
-@endsection
+@endpush
