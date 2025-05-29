@@ -21,6 +21,8 @@ Siteye aşağıdaki linkten erişebilirsiniz:
 
 [http://localhost:8000](http://localhost:8000)
 
+Not: Docker ayağa kalktığında npm kurulumu devam ediyor olabilir. Siteye girmek için 30 saniye civarı beklemeniz gerekebilir (bilgisayarınızın hızına göre değişiklik gösterebilir).
+
 ## Features
 
 ### Event Manager
