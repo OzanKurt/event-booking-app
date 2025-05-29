@@ -2,46 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EventCreateRequest;
 use App\Models\Event;
+use App\Services\EventService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
-    // Kullanıcı giriş zorunlu
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    /**
+     * @param EventService $service
+     */
+    public function __construct(
+        private EventService $service
+    ){}
 
-    // Etkinlikleri listeler (sadece kullanıcı kendi etkinliklerini görür)
     public function index()
     {
-        $events = Auth::user()->events()->withCount('bookings')->paginate(10);
-        return view('events.index', compact('events'));
+        return view('events.index', compact($this->service->getAuthEvents()));
     }
 
-    // Yeni etkinlik oluşturma sayfası
     public function create()
     {
         return view('events.create');
     }
 
-    // Yeni etkinlik kaydetme
-    public function store(Request $request)
+    public function store(EventCreateRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'date' => 'required|date|after_or_equal:today',
-        ]);
+        try {
+            $this->service->create($request->validated());
 
-        $event = new Event($validated);
-        $event->user_id = Auth::id();
-        $event->save();
-
-        return redirect()->route('events.index')->with('success', 'Event created successfully.');
+            return redirect()->route('events.index')
+                ->with('success', 'Event created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('events.index')
+                ->with('error', $e->getMessage());
+        }
     }
 
     // Etkinlik detayları (rezervasyonları ve sayısını gösterir)

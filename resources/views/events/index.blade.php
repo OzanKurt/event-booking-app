@@ -1,0 +1,56 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="container">
+        <h1>Your Events</h1>
+
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        <a href="{{ route('events.create') }}" class="btn btn-primary mb-3">Create New Event</a>
+
+        @if($events->count())
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Bookings Count</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($events as $event)
+                    <tr>
+                        <td><a href="{{ route('events.show', $event) }}">{{ $event->title }}</a></td>
+                        <td>{{ $event->date->format('Y-m-d') }}</td>
+                        <td>{{ $event->location }}</td>
+                        <td>{{ $event->bookings_count }}</td>
+                        <td>
+                            <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning">Edit</a>
+
+                            <form action="{{ route('events.destroy', $event) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                            </form>
+
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+
+            {{ $events->links() }}
+        @else
+            <p>No events found.</p>
+        @endif
+    </div>
+@endsection
