@@ -3,9 +3,15 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        \App\Models\Event::class => \App\Policies\EventPolicy::class,
+        \App\Models\Booking::class => \App\Policies\BookingPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
@@ -19,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrapFive();
     }
 }
