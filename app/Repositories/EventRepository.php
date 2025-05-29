@@ -23,4 +23,9 @@ class EventRepository
     {
         return Event::findOrFail($eventId);
     }
+
+    public function getUserEvents(int $userId)
+    {
+        return Event::withCount('bookings')->where('user_id', $userId)->orderBy('created_at', 'desc')->paginate(10);
+    }
 }

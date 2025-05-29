@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
 use App\Models\Event;
 use App\Repositories\BookingRepository;
 use Illuminate\Support\Facades\Auth;
@@ -26,5 +27,13 @@ class BookingService
         $booking = $this->repo->findOrFail($id);
         Gate::authorize('delete', [Auth::user(), $booking]);
         return $booking->delete();
+    }
+
+    public function getUserBookings(int $userId)
+    {
+        return Booking::with('event')
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
     }
 }

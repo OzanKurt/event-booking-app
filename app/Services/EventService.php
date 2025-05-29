@@ -35,4 +35,9 @@ class EventService
 
         $event->delete();
     }
+
+    public function getUserEvents(int $userId)
+    {
+        return $this->repo->getUserEvents($userId);
+    }
 }

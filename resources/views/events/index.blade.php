@@ -12,7 +12,11 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <a href="{{ route('events.create') }}" class="btn btn-primary mb-3">Etkinlik Oluştur</a>
+        <div class="d-flex mb-3">
+            <a href="{{ route('events.create') }}" class="btn btn-primary">Etkinlik Oluştur</a>
+            <a href="{{ route('my-events') }}" class="btn btn-primary ms-2">Etkinliklerim</a>
+            <a href="{{ route('my-bookings') }}" class="btn btn-primary ms-2">Rezervasyonlarım</a>
+        </div>
 
         @if($events->count())
             <table class="table table-bordered">
