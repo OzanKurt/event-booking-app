@@ -37,8 +37,8 @@
                 <input value="{{ old('date') }}" type="date" name="date" id="date" class="form-control" required min="{{ date('Y-m-d') }}">
             </div>
 
-            <button type="submit" class="btn btn-primary">Create</button>
-            <a href="{{ route('events.index') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a href="{{ route('events.index') }}" class="btn btn-secondary">Geri Dön</a>
         </form>
     </div>
 @endsection

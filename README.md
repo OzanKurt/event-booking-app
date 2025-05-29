@@ -11,7 +11,7 @@
 * [x] Users can book any event (except their own)
 * [x] Show confirmation via sweet alert or toastr
 
-### Calendar View
+### Calendar View (Events Index)
 
 * [x] Show a read-only grid/table that lists all events
 * [x] User can apply to an event from calendar.
