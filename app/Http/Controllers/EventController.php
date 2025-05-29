@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EventCreateRequest;
+use App\Http\Requests\EventCreateValidation;
 use App\Models\Event;
 use App\Services\EventService;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class EventController extends Controller
         return view('events.create');
     }
 
-    public function store(EventCreateRequest $request)
+    public function store(EventCreateValidation $request)
     {
         try {
             $this->service->create($request->validated());
@@ -42,10 +42,7 @@ class EventController extends Controller
     // Etkinlik detayları (rezervasyonları ve sayısını gösterir)
     public function show(Event $event)
     {
-        // Sadece etkinlik sahibi görebilir
-        $this->authorize('view', $event);
-
-        $event->load('bookings.user'); // rezervasyon yapan kullanıcı bilgileriyle birlikte
+        $event->load('bookings.user');
 
         return view('events.show', compact('event'));
     }
@@ -59,18 +56,11 @@ class EventController extends Controller
     }
 
     // Etkinlik güncelleme
-    public function update(Request $request, Event $event)
+    public function update(EventCreateValidation $request, Event $event)
     {
         $this->authorize('update', $event);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'date' => 'required|date|after_or_equal:today',
-        ]);
-
-        $event->update($validated);
+        $event->update($request->validated());
 
         return redirect()->route('events.index')->with('success', 'Event updated successfully.');
     }
