@@ -32,6 +32,11 @@
             <p>Henüz rezervasyon yok.</p>
         @endif
 
-        <a href="{{ route('events.index') }}" class="btn btn-secondary mt-3">Etkinliklere geri dön</a>
+        <div class="d-flex">
+            <a href="{{ route('events.index') }}" class="btn btn-secondary">Etkinliklere geri dön</a>
+            <button class="book-event-button btn btn-success ms-2" type="button" data-event-id="{{ $event->id }}">Rezerve et</button>
+        </div>
     </div>
 @endsection
+
+@include('components.scripts.booking-script')

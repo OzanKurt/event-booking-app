@@ -11,6 +11,14 @@
 * [x] Users can book any event (except their own)
 * [x] Show confirmation via sweet alert or toastr
 
+### Calendar View
+
+* [x] Show a read-only grid/table that lists all events
+* [x] User can apply to an event from calendar.
+* [x] When you click event open a new page or modal to show event details
+* [x] Event details should contain booked users and there should be a book
+  button
+
 ### Policies
 
 * EventPolicy
@@ -26,3 +34,9 @@
 * [x] EventCreateValidation
 * [x] EventUpdateValidation
 
+### Middleware
+* [x] LogRequestMiddleware
+* [x] AuthMiddleware
+
+### Seeders
+* [x] DB Seeders

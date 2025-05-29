@@ -9,7 +9,7 @@ class EventRepository
 {
     public function getEvents()
     {
-        return Event::withCount('bookings')->paginate(10);
+        return Event::withCount('bookings')->orderBy('created_at', 'desc')->paginate(10);
     }
 
     public function create(array $params)
