@@ -6,10 +6,11 @@
 * Livewire
 * Docker
 * MySQL
+* Bootstrap 5
 
 ## Kurulum Talimatları
 
-Aşağıdaki tek komut projeyi çalıştırmak için yeterlidir. Proje ana dizininde çalıştırın:
+Aşağıdaki tek komut projeyi çalıştırmak için yeterlidir. Projeyi ana dizininde çalıştırın:
 
 ```bash
   docker compose up -d --build
