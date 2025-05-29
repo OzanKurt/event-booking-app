@@ -18,4 +18,9 @@ class EventRepository
         $event->user_id = Auth::id();
         return $event->save();
     }
+
+    public function findOrFail(int $eventId)
+    {
+        return Event::findOrFail($eventId);
+    }
 }
