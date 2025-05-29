@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $guarded = [];
+    use HasFactory, SoftDeletes; // soft_delete için
+
+    protected $fillable = [
+        'event_id',
+        'user_id',
+    ];
 
     // Booking bir Event'e ait
     public function event(): \Illuminate\Database\Eloquent\Relations\BelongsTo
