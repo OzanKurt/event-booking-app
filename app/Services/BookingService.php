@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Event;
 use App\Repositories\BookingRepository;
-use App\Repositories\EventRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -16,10 +16,8 @@ class BookingService
         private BookingRepository $repo
     ){}
 
-    public function create(int $eventId): \App\Models\Booking
+    public function create(Event $event): \App\Models\Booking
     {
-        $event = (new EventRepository())->findOrFail($eventId);
-        Gate::authorize('create', [$event, Auth::user()]);
         return $this->repo->create($event->id, Auth::id());
     }
 

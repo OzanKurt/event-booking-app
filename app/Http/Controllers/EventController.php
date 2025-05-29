@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EventCreateValidation;
 use App\Models\Event;
 use App\Services\EventService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class EventController extends Controller
 {
@@ -18,7 +18,7 @@ class EventController extends Controller
 
     public function index()
     {
-        return view('events.index', ['events' => $this->service->getAuthEvents()]);
+        return view('events.index', ['events' => $this->service->getEvents()]);
     }
 
     public function create()
@@ -32,14 +32,13 @@ class EventController extends Controller
             $this->service->create($request->validated());
 
             return redirect()->route('events.index')
-                ->with('success', 'Event created successfully.');
+                ->with('success', 'Etkinlik başarıyla oluşturuldu.');
         } catch (\Exception $e) {
             return redirect()->route('events.index')
                 ->with('error', $e->getMessage());
         }
     }
 
-    // Etkinlik detayları (rezervasyonları ve sayısını gösterir)
     public function show(Event $event)
     {
         $event->load('bookings.user');
@@ -47,35 +46,28 @@ class EventController extends Controller
         return view('events.show', compact('event'));
     }
 
-    // Etkinlik düzenleme sayfası
     public function edit(Event $event)
     {
-        $this->authorize('update', $event);
+        Gate::authorize('update', $event);
 
         return view('events.edit', compact('event'));
     }
 
-    // Etkinlik güncelleme
     public function update(EventCreateValidation $request, Event $event)
     {
-        $this->authorize('update', $event);
+        Gate::authorize('update', $event);
 
         $event->update($request->validated());
 
-        return redirect()->route('events.index')->with('success', 'Event updated successfully.');
+        return redirect()->route('events.index')->with('success', 'Etkinlik güncellendi.');
     }
 
-    // Etkinlik silme
     public function destroy(Event $event)
     {
-        $this->authorize('delete', $event);
-
-        if ($event->bookings()->count() > 0) {
-            return redirect()->route('events.index')->with('error', 'Cannot delete event with bookings.');
-        }
+        Gate::authorize('delete', $event);
 
         $event->delete();
 
-        return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
+        return redirect()->route('events.index')->with('success', 'Etkinlik silindi.');
     }
 }

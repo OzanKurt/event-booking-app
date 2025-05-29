@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookingCreateValidation;
+use App\Models\Booking;
+use App\Repositories\EventRepository;
 use App\Services\BookingService;
+use Illuminate\Support\Facades\Gate;
 
 class BookingController extends Controller
 {
@@ -14,36 +17,22 @@ class BookingController extends Controller
         private BookingService $service
     ){}
 
-    /**
-     * Yeni bir rezervasyon oluştur.
-     */
     public function store(BookingCreateValidation $request)
     {
         $data = $request->validated();
+        $event = (new EventRepository())->findOrFail($data['event_id']);
+        Gate::authorize('create', $event);
 
-
-        try {
-            $booking = $this->service->create($data['event_id']);
-            return response()->json(['message' => 'Etkinlik başarıyla rezerve edildi!', 'booking' => $booking], 201);
-        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Bir hata oluştu: ' . $e->getMessage()], 500);
-        }
+        $booking = $this->service->create($event);
+        return response()->json(['message' => 'Etkinlik başarıyla rezerve edildi!', 'booking' => $booking], 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Booking $booking)
     {
-        try {
-            $booking = $this->service->delete($id);
-            return response()->json(['message' => 'Etkinlik başarıyla silindi!', 'booking' => $booking], 201);
-        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Bir hata oluştu: ' . $e->getMessage()], 500);
-        }
+        Gate::authorize('delete', $booking);
+
+        $booking->delete();
+
+        return redirect()->route('events.index')->with('success', 'Rezervasyon silindi.');
     }
 }

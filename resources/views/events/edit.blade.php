@@ -35,7 +35,7 @@
 
             <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
-                <input value="{{ old('date', $event->date->format('Y-m-d')) }}" type="date" name="date" id="date" class="form-control" required min="{{ date('Y-m-d') }}">
+                <input value="{{ old('date', $event->date) }}" type="date" name="date" id="date" class="form-control" required min="{{ date('Y-m-d') }}">
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>

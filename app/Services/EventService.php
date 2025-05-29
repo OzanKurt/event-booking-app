@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Repositories\EventRepository;
-use Illuminate\Support\Facades\Gate;
 
 class EventService
 {
@@ -15,9 +14,9 @@ class EventService
         private EventRepository $repo
     ){}
 
-    public function getAuthEvents()
+    public function getEvents()
     {
-        return $this->repo->getAuthEvents();
+        return $this->repo->getEvents();
     }
 
     public function create(array $params)
@@ -25,10 +24,15 @@ class EventService
         return $this->repo->create($params);
     }
 
-    public function show(int $eventId)
+    /**
+     * @throws \Exception
+     */
+    public function delete(Event $event)
     {
-        Gate::authorize('update', new Event());
+        if ($event->bookings()->count() > 0) {
+            throw new \Exception('Cannot delete event with bookings.');
+        }
 
-        return $this->repo->create($params);
+        $event->delete();
     }
 }

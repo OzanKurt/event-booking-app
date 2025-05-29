@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class EventRepository
 {
-    public function getAuthEvents()
+    public function getEvents()
     {
-        return Auth::user()->events()->withCount('bookings')->paginate(10);
+        return Event::withCount('bookings')->paginate(10);
     }
 
     public function create(array $params)

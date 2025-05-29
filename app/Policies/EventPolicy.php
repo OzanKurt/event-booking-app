@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Event;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class EventPolicy
 {
@@ -19,6 +20,10 @@ class EventPolicy
 
     public function delete(User $user, Event $event)
     {
+        if ($event->bookings()->count() > 0) {
+            return Response::deny('Cannot delete event with bookings.');
+        }
+
         return $user->id === $event->user_id;
     }
 }

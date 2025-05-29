@@ -10,7 +10,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('events.index') }}">Event Manager</a>
+        <a class="navbar-brand" href="{{ route('events.index') }}">Event Booking App</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 @auth

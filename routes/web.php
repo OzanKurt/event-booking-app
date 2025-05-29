@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\EventController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -16,6 +17,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('events', EventController::class);
+    Route::resource('bookings', BookingController::class);
 
     Route::redirect('settings', 'settings/profile');
 
